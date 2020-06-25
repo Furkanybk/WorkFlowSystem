@@ -18,34 +18,7 @@ namespace WFS.web
     public class MvcApplication : System.Web.HttpApplication
     {
         protected void Application_Start()
-        {
-            try
-            {
-
-                using (cfgContext db = new cfgContext())
-                {
-                    if (db.Root.ToList().Count == 0)
-                    {
-                        var management = new business.Management.Management.Login();
-
-                        Root newRoot = new Root
-                        {
-                            Name = "Furkan",
-                            Username = "Yoobibikunn",
-                            Password = business.SessionSettings.Crypting.En_De_crypt._Encrypt("*airbusA380boeing-"),
-                            Register_Date = DateTime.Now,
-                            Login_Date = default(DateTime),
-                            Status = true
-                        };
-                        management.createRoot(newRoot);
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
+        { 
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
