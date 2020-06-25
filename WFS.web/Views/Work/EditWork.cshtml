@@ -1,0 +1,54 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    ViewBag.Title = "EditWork";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">İşler</a></li>
+            <li class="breadcrumb-item active" aria-current="page">İş Düzenle</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">İş Düzenle</h6>
+                    <form id="partnerId" method="post" action="@Url.Action("EditWork","Work")">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">İş Ad</label>
+                                    <input id="Name" name="Name" type="text" class="form-control" placeholder="İş Ad" value="@Model.workM.Name" required>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Tanım</label>
+                                    <input id="Title" name="Title" type="text" class="form-control" placeholder="Tanım" value="@Model.workM.Title" required>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Açıklama</label>
+                                    <textarea id="Defination" name="Defination" class="form-control" maxlength="100" rows="8" placeholder="Açıklama" required>@Model.workM.Definition</textarea>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <input type="hidden" name="wId" id="wId" value="@Model.workM.WorkId" />
+                        <br />
+                        <div id="message"></div>
+                        <button id="subBtn" type="submit" onclick="" class="btn btn-primary mr-2 mb-2 mb-md-0" style="float:right">Kaydet</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

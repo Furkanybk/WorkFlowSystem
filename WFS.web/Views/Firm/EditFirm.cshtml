@@ -1,0 +1,157 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    ViewBag.Title = "FirmInfo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Firma</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Firma Bilgilerim</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Firma Bilgilerim</h6>
+                    <form id="firmId" method="post">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Firma Ad</label>
+                                    <input id="firmAd" name="firmAd" type="text" class="form-control" placeholder="Firma Adı" value="@Model.firm.Name" required disabled>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">İl</label>
+                                    <input id="city" name="city" type="text" class="form-control" placeholder="İl" value="@Model.firm.City" required disabled>
+                                </div>
+                            </div><!-- Col -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">İlçe</label>
+                                    <input id="state" name="state" type="text" class="form-control" placeholder="İlçe" value="@Model.firm.State" required disabled>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Tel</label>
+                                    <input id="tel" name="tel" type="tel" class="form-control" placeholder="Tel" value="@Model.firm.Contact" data-inputmask-alias="(999)-999-9999" required disabled>
+                                </div>
+                            </div><!-- Col -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Fax</label>
+                                    <input id="fax" name="fax" type="tel" class="form-control" placeholder="Fax" value="@Model.firm.Fax" data-inputmask-alias="+99(999)-999-9999" required disabled>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Email</label>
+                                    <input id="email" name="email" type="text" class="form-control" value="@Model.firm.Mail" required disabled data-inputmask="'alias': 'email'" required>
+                                </div>
+                            </div><!-- Col -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Web Site</label>
+                                    <input id="url" name="url" type="url" class="form-control" placeholder="Web Sitesi" value="@Model.firm.Url" required disabled>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Adres</label>
+                                    <textarea id="adress" name="adress" class="form-control" maxlength="100" rows="6" placeholder="Adres" required disabled>@Model.firm.Address</textarea>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Logo</label>
+                                    <input id="imageF" name="imageF" type="file" class="form-control" placeholder="Logo" disabled>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row --> 
+                        <div id="buttons">
+                            <a id="editBtn" onclick="edit()" class="btn btn-primary mr-2 mb-2 mb-md-0" style="float:right">Düzenle</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script>
+    $(function () {
+        showSwal = function (type, message) {
+            if (type === 'success') {
+                Swal.fire({
+                    position: 'middle',
+                    type: 'success',
+                    title: "Başarılı",
+                    html: message,
+                    showConfirmButton: false,
+                    timer: 3000
+                })
+            }
+            else if (type === 'error') {
+                Swal.fire({
+                    position: 'middle',
+                    type: 'error',
+                    title: "Hata",
+                    html: message,
+                    showConfirmButton: false,
+                    timer: 3000
+                })
+            }
+            else if (type === 'spinner') {
+                Swal.fire({
+                    position: 'middle',
+                    title: "<div class='spinner-border' role='status' style='width: 125px; height: 125px; color: lightblue;'><span class='sr-only'>Loading...</span></div>",
+                    showConfirmButton: false,
+                    timer: 5000
+                })
+            }
+        }
+    });
+
+    function edit() {
+        $("#firmId :input").prop("disabled", false);
+        document.getElementById("buttons").innerHTML = "<a id='subBtn' onclick='save()' class='btn btn-primary mr-2 mb-2 mb-md-0' style='float:right'>Kaydet</a>" + "<a id='cancelBtn' type='button' onclick='cancel()' class='btn btn-primary mr-2 mb-2 mb-md-0' style='float:right'>İptal</a>";
+    } 
+    function save() {  
+        var form2 = $('#firmId')[0];
+        var formData2 = new FormData(form2);
+        $.ajax({
+            url: "@Url.Action("UpdateFirm", "Firm")",
+            type: "POST",
+            processData: false,
+            contentType: false,
+            data: formData2,
+            success: function (data) {
+                if (data.result == true) {
+                    showSwal("success", data.message);
+                    $("#firmId :input").prop("disabled", true);
+                    document.getElementById("buttons").innerHTML = "<a id='editBtn' onclick='edit()' class='btn btn-primary mr-2 mb-2 mb-md-0' style='float:right'>Düzenle</a>";
+                    
+                }
+                else {
+                    showSwal("error", data.message);
+                }
+            }
+        });  
+    }
+    function cancel() {
+        window.location.href = "@Url.Action("FirmInfo", "Firm")";
+    }
+</script>

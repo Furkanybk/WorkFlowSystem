@@ -1,0 +1,128 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    ViewBag.Title = "WFS_Works";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var depid = Convert.ToInt64(Request.Params["did"]);
+    var wfid = Convert.ToInt64(Request.Params["wfid"]);
+
+    string cls;
+    string empty = "-";
+    var user = WFS.web.Session.SessionUser.User.User;
+}
+
+<style type="text/css">
+    @@media (min-width: 576px) {
+        .card-columns {
+            column-count: 4;
+            column-gap: 1.25rem;
+            orphans: 1;
+            widows: 1;
+        }
+    } 
+</style>
+
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Active/WFS">@Model.wfsModel.FirstOrDefault(r => r.wfsId == Model.wfsModelM.wfsId).Partner.Client.ManagerFirm.Name</a></li>
+            <li class="breadcrumb-item"><a href="/Active/WFS_Deps/?id=@Model.wfsModelM.wfsId">@Model.wfsModelM.Departments.FirstOrDefault(r => r.DepartmentId == depid).Name</a></li>
+            <li class="breadcrumb-item"><a href="#" onclick="returnP()">@Model.wfsModelM.WorkFlows.FirstOrDefault(r => r.WorkFlowId == wfid).Name</a></li>
+            <li class="breadcrumb-item active" aria-current="page">İşler</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card text-white">
+                <div class="card-body">
+                    <h6 class="card-title">İşler</h6>
+                    <div class="table-responsive">
+                        <table id="dataTableExample" class="table">
+                            <thead>
+                                <tr>
+                                    <th>İş Adı</th>
+                                    <th>Tanım</th>
+                                    <th>Açıklama</th> 
+                                    <th>Oluşturulma Tarihi</th>
+                                    <th>Beklenen Bitiş Tarihi</th>
+                                    <th>Başlangıç Tarihi</th>
+                                    <th>Bitiş Tarihi</th>
+                                    <th>Durum</th>
+                                    <th>#</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                @foreach (var item in Model.wfsModelM.Works)
+                                {
+                                    if (item.State.Contains("Çalışılıyor")) { cls = "warning"; } else if (item.State.Contains("Tamamlandı")) { cls = "success";  } else { cls = "primary"; }
+                                    <tr>
+                                        <td>@item.Name</td>
+                                        <td>@item.Title</td>
+                                        <td>@item.Definition.Split()[0] ...</td>
+                                        <td>@item.Register_Date</td>                                        
+                                        <td>@item.Expected_Date.ToString("dd.MM.yyyy")</td> 
+                                        <td>@if(item.Start_Date == default(DateTime)){ @empty }else{ @item.Start_Date }</td>
+                                        <td>@if(item.Finish_Date == default(DateTime)){ @empty }else{ @item.Finish_Date }</td>
+                                        <td>@if(item.Priority){<span class="badge badge-danger">ACİL</span>} else{<span class="badge badge-@cls">@item.State</span>}</td>
+                                        <td>
+                                            <a class="btn btn-light" href="@Url.Action("Work_Detail","Active",new { id= item.WorkId })">Detay</a> 
+                                            @if (user.Role.Contains("ClientManager") || user.Role.Contains("Admin"))
+                                            { 
+                                                <a class="btn btn-light" onclick="showSwal2('verify','@item.Name',@item.WorkId)">Sil</a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script> 
+    $(function () {
+        showSwal2 = function (type, name, pid) {
+            if (type === 'verify') {
+                Swal.fire({
+                    title: name+' adlı işi silmek istiyor musunuz ?',
+                    text: name+" adlı işe ait tüm iş kayıtları silinecektir ve bu işlemi geri alamazsınız!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Evet, sil!'
+                }).then((result) => {
+                    if (result.value) {
+                        verifyDelete(pid);
+                    }
+                })
+            }
+        }
+    })
+
+    function verifyDelete(wid) {
+        $.ajax({
+            url: "@Url.Action("Work_Delete", "Active")",
+            type: "POST",
+            data: { id: wid },
+            success: function (data) {
+                if (data.result == true) {
+                    showSwal("success", data.message);
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1000);
+
+                }
+                else {
+                    showSwal("error", data.message);
+                }
+            }
+        });
+    }
+
+    function returnP() {
+        window.location.href = document.referrer;
+    }
+</script>

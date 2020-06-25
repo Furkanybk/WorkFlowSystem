@@ -1,0 +1,176 @@
+﻿@model WFS.web.Models.RootModel
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WFS ROOT</title>
+
+    @Styles.Render("~/Content/layout/base/css2")
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="shortcut icon" href="~/assets/images/favicon.png" />
+</head>
+<body>
+    <div class="main-wrapper">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <a href="@Url.Action("Index","Root")" class="sidebar-brand">
+                    WFS<span> I Root</span>
+                </a>
+                <div class="sidebar-toggler not-active">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <div class="sidebar-body">
+                <ul class="nav">
+                    <li class="nav-item nav-category">Main</li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("Index","Root")" class="nav-link">
+                            <i class="link-icon" data-feather="box"></i>
+                            <span class="link-title">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item nav-category">WFS USERS</li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("Firms","Firm")" class="nav-link">
+                            <i class="link-icon" data-feather="box"></i>
+                            <span class="link-title">Firms</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("Index","Partner")" class="nav-link">
+                            <i class="link-icon" data-feather="box"></i>
+                            <span class="link-title">Client Managers</span>
+                        </a>
+                    </li>
+                    <li class="nav-item nav-category">NOT-WFS USERS</li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("Index","NonPartner")" class="nav-link">
+                            <i class="link-icon" data-feather="box"></i>
+                            <span class="link-title">Firms</span>
+                        </a>
+                    </li>
+                    <li class="nav-item nav-category">Records</li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("Index","Record")" class="nav-link">
+                            <i class="link-icon" data-feather="box"></i>
+                            <span class="link-title">Users Log</span>
+                        </a>
+                    </li>
+                    <li class="nav-item nav-category">Support</li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("Index","Support")" class="nav-link">
+                            <i class="link-icon" data-feather="help-circle"></i>
+                            <span class="link-title">Tickets</span>
+                        </a>
+                    </li>
+                    <li class="nav-item nav-category"></li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("Logout","User")" class="nav-link">
+                            <i class="link-icon" data-feather="log-out"></i>
+                            <span class="link-title">Log Out</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="page-wrapper">
+            <nav class="navbar">
+                <a href="#" class="sidebar-toggler">
+                    <i data-feather="menu"></i>
+                </a>
+                <div class="navbar-content">
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown nav-messages">
+                            <a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i data-feather="mail"></i>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="messageDropdown">
+                                <div class="dropdown-header d-flex align-items-center justify-content-between">
+                                    <p class="mb-0 font-weight-medium">0 New Messages</p>
+                                    <a href="javascript:;" class="text-muted">Clear all</a>
+                                </div>
+                                <div class="dropdown-body">
+                                    <a href="javascript:;" class="dropdown-item">
+                                        <div class="content" style="text-align:center;">
+                                            <p>No New Message</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="dropdown-footer d-flex align-items-center justify-content-center">
+                                    <a href="javascript:;">View all</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown nav-notifications">
+                            <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i data-feather="bell"></i> 
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="notificationDropdown">
+                                <div class="dropdown-header d-flex align-items-center justify-content-between">
+                                    <p class="mb-0 font-weight-medium">0 New Notifications</p>
+                                    <a href="javascript:;" class="text-muted">Clear all</a>
+                                </div>
+                                <div class="dropdown-body">
+                                    <a href="javascript:;" class="dropdown-item">
+                                        <div class="content" style="text-align:center;">
+                                            <p>No New Notification</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="dropdown-footer d-flex align-items-center justify-content-center">
+                                    <a href="javascript:;">View all</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown nav-profile">
+                            <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="~/Images/UserPicture/user/256/user_default.png" alt="profile">
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="profileDropdown">
+                                <div class="dropdown-header d-flex flex-column align-items-center">
+                                    <div class="figure mb-3">
+                                        <img src="~/Images/UserPicture/user/256/user_default.png" alt="">
+                                    </div>
+                                    <div class="info text-center">
+                                        <p class="name font-weight-bold mb-0">@Model.currentRoot.Mail</p>
+                                        <p class="email text-muted mb-3">@Model.currentRoot.Name</p>
+                                    </div>
+                                </div>
+                                <div class="dropdown-body">
+                                    <ul class="profile-nav p-0 pt-3">
+                                        <li class="nav-item">
+                                            <a href="#" class="nav-link">
+                                                <i data-feather="user"></i>
+                                                <span>Profile</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="@Url.Action("Logout","User")" class="nav-link">
+                                                <i data-feather="log-out"></i>
+                                                <span>Log Out</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            @RenderBody()
+
+            <footer class="footer d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <p class="text-muted text-center text-md-left">Copyright © 2019 <a href="https://www.nobleui.com" target="_blank">YBK</a>. All rights reserved</p>
+            </footer>
+        </div>
+    </div>
+
+    @Scripts.Render("~/Content/layout/base/js")
+</body>
+</html>

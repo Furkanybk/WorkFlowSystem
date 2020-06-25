@@ -1,0 +1,40 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+    <form id="formRootAdd" method="post" enctype="multipart/form-data" action="@Url.Action("_insertRoot2","test")"> 
+        <input name="Name" value="" id="Name" type="text" class="form-control" />
+        <input name="Password" value="" id="Password" type="password" class="form-control" />
+        <input name="Status" value="on" id="Status" type="checkbox" class="form-control" />
+        <input name="Surname" value="" id="Surname" type="text" class="form-control" />
+        <input name="Username" value="" id="Username" type="text" class="form-control" />
+        <button onclick="edepsiz()" type="button">Gönder</button>
+    </form>
+</body>
+</html>
+<script>
+      function edepsiz() {
+            $.ajax({
+                url: "@Url.Action("_insertRoot", "test")",
+                type: "POST",
+                data: $("#formRootAdd").Serialize(),
+                success: function (data) {
+                    alert(data.message);
+                },
+                error: function (data) {
+                    
+                }
+            });
+    }
+
+</script>

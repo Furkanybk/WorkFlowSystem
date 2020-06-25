@@ -1,0 +1,311 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Worf Flow System</title>
+
+    @Styles.Render("~/Content/layout/base/css")
+    <link href="~/assets/vendors/jquery-steps/jquery.steps.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="~/assets/images/favicon.png" />  
+</head>
+<body>
+    <div class="main-wrapper">
+        <div class="page-wrapper full-page">
+            <div class="page-content d-flex align-items-center justify-content-center">
+                <div class="row w-100 mx-0 auth-page" style="margin-top: 50px;">
+                    <div class="col-md-12 col-xl-8 mx-auto">
+                        <div class="card" style="border-radius:20px;">
+                            <div class="row">
+                                <div class="col-md-4 pr-md-0">
+                                    <div class="auth-left-wrapper" style="background-image:url('/Images/cmwpp.png')">
+
+                                    </div>
+                                </div>
+                                <div class="col-md-8 pl-md-0">
+                                    <div class="auth-form-wrapper px-4 py-5">
+                                        <a href="#" class="noble-ui-logo d-block mb-2">Work Flow<span> System</span></a><br />
+                                        <div id="example-basic">
+                                            <h3>Firma</h3>
+                                            <section>
+                                                <form id="firmId" method="post">
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Firma Ad</label>
+                                                                <input id="firmAd" name="firmAd" type="text" class="form-control" placeholder="Firma Ad" required>
+                                                            </div>
+                                                        </div><!-- Col -->
+                                                    </div><!-- Row -->
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label">İl</label>
+                                                                <input id="city" name="city" type="text" class="form-control" placeholder="İl" required>
+                                                            </div>
+                                                        </div><!-- Col -->
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label">İlçe</label>
+                                                                <input id="state" name="state" type="text" class="form-control" placeholder="İlçe" required>
+                                                            </div>
+                                                        </div><!-- Col -->
+                                                    </div><!-- Row -->
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Tel</label>
+                                                                <input id="tel" name="tel" type="tel" class="form-control" data-inputmask-alias="(999)-999-9999" required> 
+                                                            </div>
+                                                        </div><!-- Col -->
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Fax</label>
+                                                                <input id="fax" name="fax" type="text" class="form-control" data-inputmask-alias="+99(999)-999-9999" required>
+                                                            </div>
+                                                        </div><!-- Col -->
+                                                    </div><!-- Row -->
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Email</label>
+                                                                <input id="email" name="email" type="text" class="form-control" data-inputmask="'alias': 'email'" required>
+                                                            </div>
+                                                        </div><!-- Col -->
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Web Site</label>
+                                                                <input id="url" name="url" type="text" class="form-control" placeholder="Web Site" required>
+                                                            </div>
+                                                        </div><!-- Col -->
+                                                    </div><!-- Row -->
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Adres</label>
+                                                                <textarea id="adress" name="adress" class="form-control" maxlength="100" rows="6" placeholder="Adres" required></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Logo</label>
+                                                                <input id="imageF" name="imageF" type="file" class="form-control" placeholder="Logo">
+                                                            </div>
+                                                        </div><!-- Col -->
+                                                    </div><!-- Row -->
+                                                </form>
+                                            </section>
+                                            <h3>Yetkili</h3>
+                                            <section>
+                                                <form id="clientId" class="forms-sample" method="post">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Ad</label>
+                                                                <input value="" id="Name" name="Name" type="text" class="form-control" placeholder="Ad" required>
+                                                            </div>
+                                                        </div><!-- Col -->
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Soyad</label>
+                                                                <input value="" id="Surname" name="Surname" type="text" class="form-control" placeholder="Soyad" required>
+                                                            </div>
+                                                        </div><!-- Col -->
+                                                    </div><!-- Row -->
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Telefon</label>
+                                                                <input value="" id="Contact" name="Contact" type="tel" class="form-control" data-inputmask-alias="(999)-999-9999" required>
+                                                            </div>
+                                                        </div><!-- Col -->
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Resim</label>
+                                                                <input id="image" name="image" type="file" class="form-control" placeholder="Resim">
+                                                            </div>
+                                                        </div><!-- Col -->
+                                                    </div><!-- Row -->
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Email</label>
+                                                                <input id="Emailc" name="Emailc" type="text" class="form-control" data-inputmask="'alias': 'email'" required>
+                                                            </div>
+                                                        </div><!-- Col -->
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Password</label>
+                                                                <input value="" id="Password" name="Password" type="password" class="form-control" placeholder="Password" required>
+                                                            </div>
+                                                        </div><!-- Col -->
+                                                    </div><!-- Row -->
+                                                    <div class="form-group" id="s"></div>
+                                                    <div class="mt-3">
+                                                        <br />
+                                                    </div> 
+                                                </form>
+                                            </section> 
+                                        </div>
+                                        <a href="@Url.Action("Login")" class="d-block mt-3 text-muted">Hesabınız zaten var ise Giriş yapın.</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>  
+    <script src="~/assets/js/wizard.js"></script>
+    <script src="~/assets/vendors/jquery-steps/jquery.steps.min.js"></script>
+    <script type="text/javascript">
+
+        $("#example-basic").steps({
+            headerTag: "h3",
+            bodyTag: "section",
+            transitionEffect: "slideLeft",
+            onFinished: function (event, currentIndex) {
+                validateForm(); 
+                showSwal("spinner", data.message);
+            }
+        });
+
+        $(function () {
+            showSwal = function (type, message) {
+                if (type === 'success') {
+                    Swal.fire({
+                        position: 'middle',
+                        type: 'success',
+                        title: "Başarılı",
+                        html: message,
+                        showConfirmButton: false,
+                        timer: 3000
+                    })
+                }
+                else if (type === 'error') {
+                    Swal.fire({
+                        position: 'middle',
+                        type: 'error',
+                        title: "Hata",
+                        html: message,
+                        showConfirmButton: false,
+                        timer: 3000
+                    })
+                }
+                else if (type === 'spinner') {
+                    Swal.fire({
+                        position: 'middle',
+                        title: "<div class='spinner-border' role='status' style='width: 125px; height: 125px; color: lightblue;'><span class='sr-only'>Loading...</span></div>",
+                        showConfirmButton: false,
+                        timer: 5000
+                    })
+                }
+            }
+        }); 
+
+        function firmPost() {
+            var form2 = $('#firmId')[0];
+            var formData2 = new FormData(form2);
+            $.ajax({
+                url: "@Url.Action("firmRegister", "User")",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: formData2,
+                success: function (data) {
+                    if (data.result == true) {
+                        clientPost();
+                    }
+                    else {
+                        showSwal("error", data.message);
+                    }
+                }
+            });
+        }
+
+        function clientPost() {
+            var form = $('#clientId')[0];
+            var formData = new FormData(form);
+            $.ajax({
+                url: "@Url.Action("clientRegister", "User")",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function (data) {
+                    if (data.redirect == "Login" || data.result == true) {
+                        showSwal("success", data.message);
+                        setTimeout(function () {
+                            window.location.href = data.redirect;
+                        }, 3000);
+                    }
+                    else {
+                        showSwal("error", data.message);
+                    } 
+                }
+            });
+        }
+
+        $(function () {
+            $("#Password").keyup(function () {
+                 $.ajax({
+                    url: " @Url.Action("passwprd", "User")",
+                    type: "post",
+                    data: { pasword: document.getElementById("Password").value },
+                    success: function (data) {
+                        console.log(data);
+
+                        if (data.data > 80) {
+                            document.getElementById("s").innerHTML = "<div class='progress' ><div class='progress-bar progress-bar-success' role = 'progressbar' aria - valuenow='40' aria - valuemin='0' aria - valuemax='100' style = 'width:100%' > " + data.message + "</div > </div>";
+                        }
+                        else if (data.data >= 60) {
+                            document.getElementById("s").innerHTML = "<div class='progress' ><div class='progress-bar progress-bar-warning' role = 'progressbar' aria - valuenow='40' aria - valuemin='0' aria - valuemax='100' style = 'width:" + data.data + "%' > " + data.message + "</div > </div>";
+                        }
+                        else if (data.data < 60)
+                        {
+                            document.getElementById("s").innerHTML = "<div class='progress' ><div class='progress-bar progress-bar-danger' role = 'progressbar' aria - valuenow='40' aria - valuemin='0' aria - valuemax='100' style = 'width:" + data.data + "%' > " + data.message + "</div > </div>";
+                        }
+                    }
+                });
+            });
+        });
+
+        function validateForm() {
+            var x = document.forms["firmId"]["firmAd"].value;
+            var x2 = document.forms["firmId"]["city"].value;
+            var x3 = document.forms["firmId"]["state"].value;
+            var x4 = document.forms["firmId"]["tel"].value;
+            var x6 = document.forms["firmId"]["email"].value;
+            var x8 = document.forms["firmId"]["adress"].value;
+            if (x == "" || x2 == "" || x3 == "" || x4 == "" || x6 == "" || x8 == "") { 
+                showSwal("error", "Lütfen bilgileri eksiksiz giriniz.");
+                return false;
+            }
+            else { 
+                validateForm2();
+            }
+        }
+        function validateForm2() {
+            var y = document.forms["clientId"]["Name"].value;
+            var y2 = document.forms["clientId"]["Surname"].value;
+            var y3 = document.forms["clientId"]["Emailc"].value;
+            var y4 = document.forms["clientId"]["Password"].value;
+            if (y == "" || y2 == "" || y3 == "" || y4 == "") { 
+                showSwal("error", "Lütfen bilgileri eksiksiz giriniz.");
+                return false;
+            }
+            else { 
+                firmPost();
+            }
+        } 
+    </script>
+    @Scripts.Render("~/Content/register/jquery")
+</body>
+</html>

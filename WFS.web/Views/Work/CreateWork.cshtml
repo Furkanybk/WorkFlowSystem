@@ -1,0 +1,141 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    ViewBag.Title = "CreateWork";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">İşler</a></li>
+            <li class="breadcrumb-item active" aria-current="page">İş Ekle</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <form id="workAddId" method="post" action="@Url.Action("CreateWork","Work")">
+                    <div class="card-body">
+                        <h6 class="card-title">İş Ekle</h6>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <label class="form-check">İş Adı</label>
+                                        <input id="Name" name="Name" type="text" class="form-control" />
+                                        <label class="form-check">Tanım</label>
+                                        <input id="Title" name="Title" type="text" class="form-control" />
+                                        <label class="form-check">Açıklama</label>
+                                        <textarea id="Defination" name="Defination" class="form-control" rows="12"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label class="form-check">Partner</label>
+                                            <select id="firmList" name="firmList" class="js-example-basic-single" onchange="depwfs()">
+                                                <option value="stl">Partner seçiniz.</option>
+                                                @foreach (var item in Model.wfsModel)
+                                                {
+                                                    <option value="@item.wfsId">@item.Partner.Client.ManagerFirm.Name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-check">İş akışı</label>
+                                            <select id="wfss" name="wfss" class="js-example-basic-single">
+                                                <option>Partner seçiniz.</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="card">
+                                    <div class="card-body">
+                                        <label class="form-check">Beklenen Bitiş Tarihi</label>
+                                        <input id="expectedDate" name="expectedDate" type="date" class="form-control" />
+                                        <label class="form-check">Personel Ata</label>
+                                        <select class="js-example-basic-multiple" name="personels[]" multiple="multiple">
+                                            @foreach (var item in Model.personals)
+                                            {
+                                                <option value="@item.PersonalId">@item.Name @item.Surname</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </form>
+                <br />
+                <div class="row">
+                    <div class="col-md-6 stretch-card grid-margin grid-margin-md-0">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">Dropzone</h6>
+                                <p class="card-description">Read the <a href="https://www.dropzonejs.com/" target="_blank"> Official Dropzone.js Documentation </a>for a full list of instructions and other options.</p>
+                                <form action="/file-upload" class="dropzone" id="exampleDropzone"></form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-10"></div>
+                    <div class="col-md-2"><button id="subBtn" type="submit" onclick="" class="btn btn-primary mr-2 mb-2 mb-md-0" style="float:right">Kaydet</button></div>
+                </div> 
+            </div> 
+        </div>
+    </div>
+</div>
+<script>
+
+    function returnP() {
+        window.location.href = document.referrer;
+    }
+
+    function depwfs() {
+        var id = $("#firmList").children("option:selected").val();
+        var sel = document.getElementById("wfss");
+        if (id != "stl") {
+            $.ajax({
+                url: "@Url.Action("depSelect", "WorkFlow")",
+                type: "POST",
+                data: { customerFirmId: id },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.result == true && data.list != null) {
+                        $("#wfss").empty();
+                        $.each(data.list, function (key, elem) {
+                            var group = document.createElement('optgroup');
+                            group.label = elem.Name;
+                            $.each(elem.WorkFlows, function (key, elem2) {
+                                var opt = document.createElement('option');
+                                opt.innerHTML = elem2.Name;
+                                opt.value = elem2.WorkFlowId;
+                                console.log(elem2.WorkFlowId);
+                                group.appendChild(opt);
+                            });
+                            sel.appendChild(group);
+                        });
+                    }
+                    else {
+                        $("#wfss").empty();
+                        var opt = document.createElement('option');
+                        opt.innerHTML = "Departman oluşturulmamış.";
+                        sel.appendChild(opt);
+                    }
+                }
+            });
+        }
+        else {
+            $("#wfss").empty();
+            var opt = document.createElement('option');
+            opt.innerHTML = "Partner seçiniz.";
+            opt.value = "stl";
+            sel.appendChild(opt);
+        }
+
+    }
+</script>

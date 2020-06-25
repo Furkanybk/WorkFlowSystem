@@ -1,0 +1,63 @@
+﻿@model WFS.web.Models.MainModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Hesap</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Destek</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="card-title">Destek</h6>
+                        </div> 
+                    </div>
+                    <div class="text-center p-3">  
+                        <p>
+                            Destek bölümünde istek ve önerilerinizi belirtebilirsiniz veya sistem ile ilgili yaşadığınız problemleri ayrıntılı olarak açıklayarak destek talebinde bulunabilirsiniz. 
+                            Gönderilen destek mesajlarınız en kısa zamanda mesaj olarak geri dönüş yapılacaktır.
+                        </p>
+                        <br />
+                        <form>
+                            <input id="ticketTitle" type="text" class="form-control" placeholder="Konu" />
+                            <br />
+                            <textarea id="ticketMsg" class="form-control" rows="15" placeholder="Mesaj"></textarea>
+                        </form>
+                        <br />
+                        <button class="btn btn-primary" onclick="addTicket()">Gönder</button> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script>
+    function addTicket() {
+        $.ajax({
+            url: "@Url.Action("AddTicket", "Ticket")",
+            type: "POST",
+            data: { ticketTitle: $("#ticketTitle").val(), ticketMsg: $("#ticketMsg").val() },
+            success: function (data) {
+                if (data.result == true) {
+                    showSwal("success", data.message);    
+                    setTimeout(function () {
+                        window.location.href = "/Panel";
+                    }, 3000);
+                }
+                else { 
+                    showSwal("error", data.message);   
+                } 
+            }
+        });
+    }
+</script>

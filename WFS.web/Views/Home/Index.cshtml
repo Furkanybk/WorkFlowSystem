@@ -1,0 +1,38 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<style>
+    #header #logo h1 a, #header #logo h1 a:hover {
+        border-left: 4px solid #0c98de;
+        text-decoration: none;
+    }
+
+    #intro .btn-get-started {
+        font-family: "Montserrat", sans-serif;
+        text-decoration: none;
+        background: #0c98de;
+    }
+    #intro .btn-get-started:hover {
+        background: #fff;
+        color: #000000;
+    }
+</style>
+<section id="intro">
+    <div class="intro-container">
+        <div id="introCarousel" class="carousel  slide carousel-fade" data-ride="carousel"> 
+            <div class="carousel-inner" role="listbox"> 
+                <div class="carousel-item active">
+                    <div class="carousel-background"><img src="~/Images/cmwpp.png" alt=""></div>
+                    <div class="carousel-container">
+                        <div class="carousel-content">
+                            <h2>Çok yakında yayındayız...</h2> 
+                            <a href="@Url.Action("Login","User")" class="btn-get-started">Müşteri Paneli</a>
+                        </div>
+                    </div>
+                </div> 
+            </div> 
+        </div>
+    </div>
+</section> 

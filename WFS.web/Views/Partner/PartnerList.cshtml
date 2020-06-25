@@ -1,0 +1,97 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    ViewBag.Title = "PartnerList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+  
+}
+
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">İş Partnerleri</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Partner Bilgileri</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Partnerlerim</h6>
+                    <div class="table-responsive">
+                        <table id="dataTableExample" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Firma</th>
+                                    <th>Yetkili</th>
+                                    <th>İl</th>
+                                    <th>Firma Tel</th>
+                                    <th>Yetkili Tel</th>
+                                    <th>#</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.partners)
+                                {
+                                    <tr>
+                                        <td>@item.Client.ManagerFirm.Name</td> 
+                                        <td>@item.Client.Name @item.Client.Surname</td>
+                                        <td>@item.Client.ManagerFirm.City</td> 
+                                        <td>@item.Client.ManagerFirm.Contact</td>
+                                        <td>@item.Client.Contact</td>
+                                        <td>
+                                            <a class="btn btn-light" href="@Url.Action("PartnerProfile","Partner",new { id= item.CustomerFirmManagerId })">Detay</a>
+                                            l <a class="btn btn-light" onclick="showSwal2('verify','@item.Client.ManagerFirm.Name',@item.CustomerFirmManagerId);">Sil</a>
+                                            <input id="pId" name="pId" hidden />
+                                        </td> 
+                                    </tr>
+                                }
+                            </tbody>
+                        </table> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        showSwal2 = function (type, name, pid) {
+            if (type === 'verify') {
+                Swal.fire({
+                    title: name+' adlı partneri silmek istiyor musunuz ?',
+                    text: name+" adlı partnere ait tüm departman, iş akış ve iş kayıtları silinecektir ve bu işlemi geri alamazsınız!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Evet, sil!'
+                }).then((result) => {
+                    if (result.value) {
+                        verifyDelete(pid);
+                    }
+                })
+            }
+        }
+    })
+
+    function verifyDelete(id) {
+        $.ajax({
+            url: "@Url.Action("DeletePartner", "Partner")",
+            type: "POST",
+            data: { pId: id },
+            success: function (data) {
+                if (data.result == true) {
+                    showSwal("success", data.message);
+                    setTimeout(function () {  
+                        location.reload();
+                    }, 2000);  
+                    
+                }
+                else {
+                    showSwal("error", data.message);
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,208 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    ViewBag.Title = "WorkList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">İşler</a></li>
+            <li class="breadcrumb-item active" aria-current="page">İş</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">İşler</h6>
+                    <div class="table-responsive">
+                        <table id="dataTableExample" class="table">
+                            <thead>
+                                <tr>
+                                    <th>İş Adı</th>
+                                    <th>Tanım</th>
+                                    <th>Açıklama</th>
+                                    <th>Kayıt Tarihi</th>
+                                    <th>Başlangıç Tarihi</th>
+                                    <th>Beklenen Bitiş Tarihi</th>
+                                    <th>Bitiş Tarihi</th>
+                                    <th>Durum</th>
+                                    <th>#</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                @foreach (var item in Model.works)
+                                {
+                                    <tr>
+                                        <td>@item.Name</td>
+                                        <td>@item.Title</td>
+                                        <td>@item.Definition</td>
+                                        <td>@item.Register_Date</td>
+                                        <td>@item.Start_Date</td>
+                                        <td>@item.Expected_Date</td>
+                                        <td>@item.Finish_Date</td>
+                                        <td>@item.State</td>
+                                        <td>
+                                            <a class="btn btn-light" href="@Url.Action("EditWork","Work",new { id= item.WorkId })">Düzenle</a>
+                                            l <a class="btn btn-light" href="@Url.Action("DeleteWork","Work",new { id= item.WorkId })">Sil</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="wWF" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Listelemek istediğiniz İş akışını seçiniz.</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <select id="firmList" name="firmList" class="form-control col-sm-9" onchange="listSelect()">
+                        <option value="nt">Partner seçiniz.</option>
+                        @foreach (var item in Model.partners)
+                        {
+                            <option value="@item.CustomerFirmManagerId">@item.Client.ManagerFirm.Name</option>
+                        }
+                    </select>
+                    <br />
+                    <select id="depList" name="depList" class="form-control col-sm-9" onchange="listSelect2()">
+                        <option value="nt">Partner seçiniz.</option>
+                    </select>
+                    <br />
+                    <select id="wfList" name="wfList" class="form-control col-sm-9">
+                        <option value="nt">Departman seçiniz.</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="workListPost()" class="btn btn-primary">Listele</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = function () {
+        $("#wWF").modal();
+    };
+
+    function listSelect() {
+        var id = $("#firmList").children("option:selected").val();
+        console.log(id);
+        var sel = document.getElementById('depList'); 
+        var sel2 = document.getElementById('wfList'); 
+        $.ajax({
+            url: "@Url.Action("depSelect", "WorkFlow")",
+            type: "POST",
+            data: { customerFirmId: id },
+            dataType: 'json',
+            success: function (data) {
+                if (data.result == true && data.list != null) {
+                    $("#depList").empty();
+                    var opt = document.createElement('option');
+                    opt.innerHTML = "Departman seçiniz.";
+                    sel.appendChild(opt);  
+
+                    $.each(data.list, function (idx, elem) {
+                        var opt = document.createElement('option');
+                        opt.innerHTML = elem.Name;
+                        opt.value = elem.DepartmentId;
+                        sel.appendChild(opt);
+                    });
+                }
+                else {
+                    $("#depList").empty();
+                    $("#wfList").empty();
+                    var opt = document.createElement('option');
+                    opt.innerHTML = "Departman oluşturulmamış.";
+                    sel.appendChild(opt);
+                    var opt2 = document.createElement('option');
+                    opt2.innerHTML = "Departman oluşturulmamış.";
+                    sel2.appendChild(opt2);
+                }
+            }
+        });
+    }
+
+    function listSelect2() {
+        var id = $("#depList").children("option:selected").val();
+        console.log(id);
+        var sel = document.getElementById('wfList');
+        $.ajax({
+            url: "@Url.Action("wflowSelect", "Work")",
+            type: "POST",
+            data: { depId: id },
+            dataType: 'json',
+            success: function (data) {
+                if (data.result == true && data.list2 != null) {
+                    $("#wfList").empty();
+                    var opt = document.createElement('option');
+                    opt.innerHTML = "İş akışı seçiniz.";
+                    sel.appendChild(opt);
+                    var opt = document.createElement('option');
+                    opt.innerHTML = "Tüm işleri listele";
+                    opt.value = "all";
+                    sel.appendChild(opt);
+
+                    $.each(data.list2, function (idx, elem) {
+                        var opt = document.createElement('option');
+                        opt.innerHTML = elem.Name;
+                        opt.value = elem.WorkFlowId;
+                        sel.appendChild(opt);
+                    });
+                }
+                else {
+                    $("#wfList").empty();
+                    var opt = document.createElement('option');
+                    opt.innerHTML = "İş akışı oluşturulmamış.";
+                    sel.appendChild(opt);
+                }
+            }
+        });
+    }
+
+    function workListPost() { 
+        var wf_id = $("#wfList").children("option:selected").val();
+        console.log(wf_id);
+        var table = $("#tableBody");
+
+        if (wf_id != "all") { 
+            $.ajax({
+                url: "@Url.Action("workListPost", "Work")",
+                type: "POST",
+                data: { workflowId: wf_id },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.result == true && data.list3 != null) {
+                        $("#dataTableExample").dataTable().fnDestroy();
+                        table.empty();
+                        $.each(data.list3, function (idx, elem) {
+                            table.append("<tr><td>" + elem.Name + "</td><td>" + elem.Title + "</td><td>" + elem.Definition + "</td><td>" + moment(elem.Register_Date).format('DD-MM-YYYY') + "</td><td>" + moment(elem.Start_Date).format('DD-MM-YYYY') + "</td><td>" + moment(elem.Expected_Date).format('DD-MM-YYYY') + "</td><td>" + moment(elem.Finish_Date).format('DD-MM-YYYY') + "</td><td>" + elem.State + "</td><td> <a class='btn btn-light' href='/Work/EditWork/?id=" + elem.WorkId + "'>Düzenle</a> l <a class='btn btn-light' href='/Work/DeleteWork/?id=" + elem.WorkId + "'>Sil</a> </td></tr>");
+                        });
+                        $("#dataTableExample").DataTable();
+                        $("#wWF").modal("hide");
+                    }
+                    else {
+                        $("#dataTableExample").dataTable().fnDestroy();
+                        table.empty();
+                        table.append("<tr> <td valign = 'top' colspan = '5' class= 'dataTables_empty'>" + data.message + "</td> </tr>");
+                        $("#wWF").modal("hide");
+                    }
+                }
+            });
+        } else {
+            $("#wWF").modal("hide");
+        }
+    }
+
+
+</script>

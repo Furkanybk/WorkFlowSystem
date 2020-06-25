@@ -1,0 +1,161 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Worf Flow System</title>
+
+    @Styles.Render("~/Content/layout/base/css")
+    <link href="~/assets/vendors/jquery-steps/jquery.steps.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="~/assets/images/favicon.png" />
+
+</head>
+<body>
+    <div class="main-wrapper">
+        <div class="page-wrapper full-page">
+            <div class="page-content d-flex align-items-center justify-content-center">
+
+                <div class="row w-100 mx-0 auth-page">
+                    <div class="col-md-8 col-xl-6 mx-auto">
+                        <div class="card" style="border-radius:20px;">
+                            <div class="row">
+                                <div class="col-md-4 pr-md-0">
+                                    <div class="auth-left-wrapper" style="background-image:url('/Images/cmwpp.png')">
+                                    </div>
+                                </div>
+                                <div class="col-md-8 pl-md-0">
+                                    <div class="auth-form-wrapper px-4 py-5">
+                                        <a href="#" class="noble-ui-logo d-block mb-2">Work Flow<span> System</span></a>
+                                        <form id="loginForm" class="forms-sample" method="post">
+                                            <div class="form-group">
+                                                <label class="control-label">Email</label>
+                                                <input id="Email" name="Email" type="email" class="form-control" placeholder="Email" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Password</label>
+                                                <input id="Password" name="Password" type="password" class="form-control" placeholder="Password" required>
+                                            </div>
+                                            @*<div class="form-check form-check-flat form-check-primary">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input">
+                                                        Remember me
+                                                    </label>
+                                                </div>*@
+                                        </form>
+                                        <div class="mt-3">
+                                            <button id="subBtn" type="submit" onclick="validate()" class="btn btn-primary mr-2 mb-2 mb-md-0">Giriş yap</button> 
+                                        </div>
+                                        <a href="@Url.Action("clientRegister")" class="d-block mt-3 text-muted">Hesabız yok mu ? Kayıt olun.</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script>
+
+        $(function () {
+            showSwal = function (type, message) {
+                if (type === 'success') {
+                    Swal.fire({
+                        position: 'middle',
+                        type: 'success',
+                        title: "Başarılı",
+                        html: message,
+                        showConfirmButton: false,
+                        timer: 3000
+                    })
+                }
+                else if (type === 'error') {
+                    Swal.fire({
+                        position: 'middle',
+                        type: 'error',
+                        title: "Hata",
+                        html: message,
+                        showConfirmButton: false,
+                        timer: 3000
+                    })
+                }
+                else if (type === 'spinner') { 
+                    Swal.fire({
+                        position: 'middle',
+                        title: "<div class='spinner-border' role='status' style='width: 125px; height: 125px; color: lightblue;'><span class='sr-only'>Loading...</span></div>",
+                        showConfirmButton: false,
+                        timer: 5000
+                    })
+                }
+            }
+        });
+
+        $("loginForm input").keypress(function (e) {
+            if (e.keyCode == 13) {
+                $(this).focus()
+            }
+        })
+
+        function siginRoot() {
+            $.ajax({
+                url:  "@Url.Action("RL","User")",
+                type: "POST",
+                data: $("#loginForm").serialize(),
+                success: function (data) {
+                    if (data.result == true) {
+                        showSwal("success",data.message);
+                        window.location.href = "@Url.Action("Index","Root")"; 
+                    }
+                    else { 
+                        showSwal("error", data.message);
+                    }
+                }
+            });
+        }
+
+        function validate() {
+            var y = document.forms["loginForm"]["Email"].value;
+            var y2 = document.forms["loginForm"]["Password"].value;
+            if (y == "" || y2 == "") { 
+                showSwal("error", "Lütfen bilgileri eksiksiz giriniz.");
+                return false;
+            }
+            
+            else {  
+                if (y == "Yoobibikunn") { 
+                    siginRoot();
+                }
+                else { 
+                    sigin();
+                }
+            }
+
+        }
+        function sigin() {
+            $.ajax({
+                url: "@Url.Action("userLogin","User")",
+                type: "POST",
+                data: $("#loginForm").serialize(),
+                success: function (data) {
+                    if (data.result == true) {
+                        showSwal("success",data.message);
+                        window.location.href = "@Url.Action("Index", "Panel")";
+
+                    }
+                    else {  
+                        showSwal("error", data.message);
+                    }
+                }
+            });
+        }
+    </script>
+
+    @Scripts.Render("~/Content/register/jquery")
+</body>
+</html>

@@ -1,0 +1,39 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    Layout = null;
+}
+ 
+
+
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Hesap</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Profil Bilgilerim</li>
+        </ol>
+    </nav>
+    <div class="row"> 
+        <form class="form-control" id="editForm">
+            <input type="file" id="image" name="image" class="form-control" />
+        </form>
+        <button class="form-control" onclick="postImage()">g</button>
+    </div>
+</div>
+
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
+<script> 
+    function postImage() { 
+        var form = $('#editForm')[0];
+        var formData = new FormData(form);
+        $.ajax({
+            url: "@Url.Action("addImage", "test")",
+            type: "POST",
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: function (data) { 
+            }
+        }); 
+    }
+</script>

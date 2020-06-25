@@ -1,0 +1,180 @@
+﻿@model WFS.web.Models.MainModel
+
+@{
+    ViewBag.Title = "Index";
+
+    var i = 1;
+    string cls;
+    string empty = "-";
+
+     
+
+}
+
+
+<div class="page-content">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+        <div>
+            <h4 class="mb-3 mb-md-0">@Model.currentUser.Name @Model.currentUser.Surname I @Model.currentUser.PRole </h4>
+        </div>
+        <div class="d-flex align-items-center flex-wrap text-nowrap">
+            <div class="input-group date datepicker dashboard-date mr-2 mb-2 mb-md-0 d-md-none d-xl-flex" id="dashboardDate">
+                <span class="input-group-addon bg-transparent"><i data-feather="calendar" class=" text-primary"></i></span>
+                <input type="text" class="form-control" disabled>
+            </div>
+            @*<button type="button" class="btn btn-primary btn-icon-text mb-2 mb-md-0">
+                <i class="btn-icon-prepend" data-feather="download-cloud"></i>
+                Gün Sonu Raporları
+            </button>*@
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-xl-12 stretch-card">
+            <div class="row flex-grow">
+                <div class="col-md-4 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0">Partnerler</h6>
+                                <div class="dropdown mb-2"> 
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-5">
+                                    <h3 class="mb-2">@Model.mainpage.partnerCount</h3>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0">Çalışılan İş</h6>
+                                <div class="dropdown mb-2"> 
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-5">
+                                    <h3 class="mb-2">@Model.mainpage.onGoingWorkCount</h3>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0">Tamamlanan İş</h6>
+                                <div class="dropdown mb-2"> 
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-5">
+                                    <h3 class="mb-2">@Model.mainpage.completedWorkCount</h3>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- row -->   
+    <div class="row">
+        <div class="col-lg-5 col-xl-4 grid-margin grid-margin-xl-0 stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-baseline mb-2">
+                        <h6 class="card-title mb-0">Mesajlar</h6>
+                    </div>
+                    <div class="d-flex flex-column">
+                        @foreach (var item in Model.mainpage.messages.Take(6).OrderByDescending(r => r.MessageDate))
+                        { 
+                            <a href="@Url.Action("ReadMessage","Message",new { message = item.MessageId })" class="d-flex align-items-center border-bottom pb-3">
+                                <div class="mr-3">
+                                    <img src="~/Images/UserPicture/@item.SenderUser.UserName.Split('@')[0]/128/@item.SenderUser.Image" class="rounded-circle wd-35" alt="user">
+                                </div>
+                                <div class="w-100">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="text-body mb-2">@item.SenderUserName</h6>
+                                        <p class="text-muted tx-12">@item.MessageDate</p>
+                                    </div>
+                                    <p class="text-muted tx-13">@item.MessageName</p>
+                                </div>
+                            </a>
+                            <br />
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7 col-xl-8 stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-baseline mb-2">
+                        <h6 class="card-title mb-0">Son Oluşturulan İşler</h6>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="pt-0">#</th>
+                                    <th class="pt-0">İş Ad</th>
+                                    <th class="pt-0">Oluşturulma Tarihi</th>
+                                    <th class="pt-0">Başlangıç Tarihi</th>
+                                    <th class="pt-0">Beklenen Bitiş Tarihi</th>
+                                    <th class="pt-0">Durumu</th> 
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.mainpage.lastWorks)
+                                {
+                                    if(item.ProgressBar == 100) { continue; }
+                                    if (item.State.Contains("Çalışılıyor")) { cls = "warning"; } else if (item.State.Contains("Tamamlandı")) { cls = "success"; } else { cls = "primary"; }
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@item.Name</td>
+                                        <td>@item.Register_Date</td>
+                                        <td>@if(item.Start_Date == default(DateTime)){ @empty }else{ @item.Start_Date }</td>
+                                        <td>@item.Expected_Date.ToString("dd.MM.yyyy")</td>
+                                        <td>@if (item.Priority) {<span class="badge badge-danger">ACİL</span>} else {<span class="badge badge-@cls">@item.State</span>}</td> 
+                                    </tr> 
+                                    i++;
+                                } 
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- row --> 
+
+    <div id="workList" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">İş Listesi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Tamam</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script> 
+    $(document).ready(function () { 
+        window.loaction.reload();
+    });
+</script>

@@ -1,0 +1,193 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    ViewBag.Title = "Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string dir;
+
+    if (Model.currentUser.Image == "user_default.png")
+    {
+        dir = "user";
+    }
+    else
+    {
+        dir = Model.currentUser.Mail.Split('@')[0];
+    }
+
+}  
+
+<style> 
+    .circular-square {
+        border-top-left-radius: 50% 50%;
+        border-top-right-radius: 50% 50%;
+        border-bottom-right-radius: 50% 50%;
+        border-bottom-left-radius: 50% 50%;
+    } 
+</style>
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Hesap</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Profil Bilgilerim</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-4 stretch-card"></div>
+        <div class="col-md-4 stretch-card">
+            <div class="card" style="text-align: center;">
+                <div class="card-body">
+                    <img id="profilePic" class="circular-square img-fluid " src="~/Images/UserPicture/@dir/512/@Model.currentUser.Image"/>
+                    <h5 class="text-center text-uppercase mt-3 mvvb-4">@Model.currentUser.Name @Model.currentUser.Surname</h5>
+                    <h3 class="text-center font-weight-light">@Model.currentUser.PRole</h3>
+                    <p class="text-muted text-center mb-4 font-weight-light">@Model.currentUser.Role</p>
+                    <div class="d-flex align-items-center mb-2">
+                        <i data-feather="mail" class="icon-md text-primary mr-2"></i>
+                        <p><strong>Email :</strong> @Model.currentUser.Mail</p>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <i data-feather="smartphone" class="icon-md text-primary mr-2"></i>
+                        <p><strong>Tel :</strong> @Model.currentUser.Contact</p>
+                    </div>
+                    <button class="btn btn-primary d-block mx-auto mt-4" onclick="editProfile()">Düzenle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="editmodal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Profil düzenle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm" class="forms-sample">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Ad</label>
+                            <div class="col-sm-9">
+                                <input id="Name" name="Name" type="text" class="form-control" value="@Model.currentUser.Name" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Soyad</label>
+                            <div class="col-sm-9">
+                                <input id="Surname" name="Surname" type="text" class="form-control" value="@Model.currentUser.Surname" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Email</label>
+                            <div class="col-sm-9">
+                                <input id="Email" name="Email" type="text" class="form-control" data-inputmask="'alias': 'email'" value="@Model.currentUser.Mail" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Tel</label>
+                            <div class="col-sm-9">
+                                <input id="Contact" name="Contact" type="tel" class="form-control" data-inputmask-alias="(999)-999-9999" value="@Model.currentUser.Contact" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Şifre</label>
+                            <div class="col-sm-9">
+                                <input type="password" id="Password" name="Password" class="form-control" value="@Model.currentUser.Password" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Resim</label>
+                            <div class="col-sm-9">
+                                <input type="file" id="Image" name="Image" class="form-control" required>
+                            </div>
+                        </div>
+                        <div id="s" class="form-check form-check-flat form-check-primary mt-0">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary" onclick="inputControl()">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
+<script>  
+
+    function inputControl() {
+        var np = 1;
+        $('#Name, #Surname, #Email, #Contact, #Password').each(function () {
+            if ($(this).val() == '') {
+                showSwal("error", 'Lütfen boş kısımları doldurunuz.');
+                np = 0;
+            } 
+        });
+        if (np == 1) { 
+            save();
+        }
+    }
+
+    function editProfile() {
+        $("#editmodal").modal();
+    }
+     
+    function save() { 
+        var form = $('#editForm')[0];
+        var formData = new FormData(form); 
+        $.ajax({
+            url: "@Url.Action("ProfileUpdate", "Manager")",
+            type: "POST",
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: function (data) {
+                if (data.result == true) {
+                    showSwal("success", data.message);  
+                    $.ajax({
+                        url: " @Url.Action("JustUpdate", "Manager")",
+                        type: "post",
+                        data: { },
+                        success: function (data) {
+                            setTimeout(function () {
+                                location.href = "/Manager/Profile";
+                            }, 3000);
+                        }
+                    });
+                }
+                else if (data.result == false) {
+                    showSwal("error", data.message);
+                } 
+                else{
+                    showSwal("error", "Resim yüklenemedi, başka resim deneyiniz.");
+                }
+            }
+        });
+    } 
+
+    $(function () {
+        $("#Password").keyup(function () {
+                $.ajax({
+                    url: " @Url.Action("passwprd", "User")",
+                    type: "post",
+                    data: { pasword: document.getElementById("Password").value },
+                    success: function (data) {
+                            if (data.data > 80) {
+                                document.getElementById("s").innerHTML = "<div class='progress' ><div class='progress-bar progress-bar-success' role = 'progressbar' aria - valuenow='40' aria - valuemin='0' aria - valuemax='100' style = 'width:100%' > " + data.message + "</div > </div>";
+                            }
+                            else if (data.data >= 60) {
+                                document.getElementById("s").innerHTML = "<div class='progress' ><div class='progress-bar progress-bar-warning' role = 'progressbar' aria - valuenow='40' aria - valuemin='0' aria - valuemax='100' style = 'width:" + data.data + "%' > " + data.message + "</div > </div>";
+                            }
+                            else if (data.data < 60)
+                            {
+                                document.getElementById("s").innerHTML = "<div class='progress' ><div class='progress-bar progress-bar-danger' role = 'progressbar' aria - valuenow='40' aria - valuemin='0' aria - valuemax='100' style = 'width:" + data.data + "%' > " + data.message + "</div > </div>";
+                            }
+                    }
+                });
+        });
+    }); 
+
+</script>

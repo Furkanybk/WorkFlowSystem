@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.902
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFS.db", "WFS.db\WFS.db.csproj", "{8CDD112F-F66B-487F-A20B-9AE6C3309781}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFS.web", "WFS.web\WFS.web.csproj", "{75D1C5CD-5E96-4552-9CAC-DF7921ABF577}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFS.business", "WFS.business\WFS.business.csproj", "{6DC83A4B-4A67-4E7C-B7C3-A10360F936C9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8CDD112F-F66B-487F-A20B-9AE6C3309781}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CDD112F-F66B-487F-A20B-9AE6C3309781}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CDD112F-F66B-487F-A20B-9AE6C3309781}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CDD112F-F66B-487F-A20B-9AE6C3309781}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75D1C5CD-5E96-4552-9CAC-DF7921ABF577}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75D1C5CD-5E96-4552-9CAC-DF7921ABF577}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75D1C5CD-5E96-4552-9CAC-DF7921ABF577}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75D1C5CD-5E96-4552-9CAC-DF7921ABF577}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DC83A4B-4A67-4E7C-B7C3-A10360F936C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DC83A4B-4A67-4E7C-B7C3-A10360F936C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DC83A4B-4A67-4E7C-B7C3-A10360F936C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DC83A4B-4A67-4E7C-B7C3-A10360F936C9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {662FF039-9FE5-4DC2-AB51-C406B352ABE4}
+	EndGlobalSection
+EndGlobal

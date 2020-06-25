@@ -1,0 +1,64 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    ViewBag.Title = "WFS_Deps";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    @@media (min-width: 576px) {
+        .card-columns {
+            column-count: 4;
+            column-gap: 1.25rem;
+            orphans: 1;
+            widows: 1;
+        }
+    }
+</style>
+
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#" onclick="returnP()">@Model.wfsModel.FirstOrDefault(r => r.wfsId == Model.wfsModelM.wfsId).Partner.Client.ManagerFirm.Name</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Departmanlar</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card text-black bg-light">
+                <div class="card-body">
+                    <h6 class="card-title">Departmanlar</h6>
+                    <div class="row">
+                        <div class="card-columns">
+                            @foreach (var item in Model.wfsModelM.Departments)
+                            {
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">@item.Name</h4>
+                                        <p class="card-text">@item.Title</p>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-md-7"><p class="card-text">İş akışı : @item.WorkFlows.Count()</p></div>
+                                            <div class="col-md-5"><p class="card-text">İş : @item.WorkFlows.SelectMany(r => r.Works).Count() </p></div> 
+                                        </div>
+                                        <p class="card-text">Kayıt Tarihi : @item.Register_Date.ToString("dd.MM.yyyy") </p>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-md-4"></div>
+                                            <div class="col-md-5"><a href="/Active/WFS_WFlows/?id=@Model.wfsModelM.wfsId&did=@item.DepartmentId" class="btn btn-primary">İş Akışları</a></div>
+                                            <div class="col-md-3"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function returnP() {
+        window.location.href = document.referrer;
+    }
+</script>

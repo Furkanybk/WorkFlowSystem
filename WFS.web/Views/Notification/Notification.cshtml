@@ -1,0 +1,79 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    ViewBag.Title = "Notification";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var TimeConvert = new WFS.business.Management.NotificationManager.NotificationFunctions();
+}
+
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Panel</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Bildirimlerim</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Bildirimlerim</h6>
+                    <div class="table-responsive">
+                        <table id="dataTableExample" class="table">
+                            <thead>
+                                <tr class="ui-bar-d">
+                                    <th>
+                                        Başlık
+                                    </th>
+                                    <th>
+                                        Mesaj
+                                    </th>
+                                    <th>
+                                        Oluşturuldu
+                                    </th>
+                                    <th>
+                                        #
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.notifications.OrderByDescending(r => r.createdate))
+                                {
+                                    <tr>
+                                        <td>@item.title</td>
+                                        <td>@item.message</td>
+                                        <td>@TimeConvert.getTime(item.createdate)</td>
+                                        <td><a href="@item.detailUrl" class="btn btn-light">Git</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div> 
+                    <br />
+                    <button class="btn btn-light" onclick="myClear()" style="float:right;">Temizle</button>
+                </div>  
+            </div> 
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script> 
+<script>  
+    function myClear() {  
+        $.ajax({
+            url: "@Url.Action("clear", "Notification")",
+            type: "POST",
+            data: {},
+            success: function (data) {
+                if (data.result == true) {
+                    showSwal("success", data.message);
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1000);
+                }
+                else {
+                    showSwal("error", data.message);
+                }
+            }
+        });  
+    }
+</script> 

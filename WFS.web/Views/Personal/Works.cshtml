@@ -1,0 +1,66 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    ViewBag.Title = "Works";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string cls;
+    string empty = "-";
+} 
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Work Flow</a></li>  
+            <li class="breadcrumb-item active" aria-current="page">İşlerim</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card text-white">
+                <div class="card-body">
+                    <h6 class="card-title">İşlerim</h6>
+                    <div class="table-responsive">
+                        <table id="dataTableExample" class="table">
+                            <thead>
+                                <tr>
+                                    <th>İş Adı</th>
+                                    <th>Tanım</th>
+                                    <th>Açıklama</th>
+                                    <th>Oluşturulma Tarihi</th> 
+                                    <th>Beklenen Bitiş Tarihi</th>
+                                    <th>Başlangıç Tarihi</th>
+                                    <th>Bitiş Tarihi</th>
+                                    <th>Durum</th>
+                                    <th>#</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                @foreach (var item in Model.works)
+                                {
+                                    if (item.State.Contains("Çalışılıyor")) { cls = "warning"; } else if (item.State.Contains("Tamamlandı")) { cls = "success"; } else if (item.State.Contains("Acil")) { cls = "danger"; } else { cls = "primary"; }
+                                    <tr>
+                                        <td>@item.Name</td>
+                                        <td>@item.Title</td>
+                                        <td>@item.Definition.Split()[0] ...</td>
+                                        <td>@item.Register_Date</td>
+                                        <td>@item.Expected_Date.ToString("dd.MM.yyyy")</td>
+                                        <td>@if(item.Start_Date == default(DateTime)){ @empty }else{ @item.Start_Date }</td>
+                                        <td>@if(item.Finish_Date == default(DateTime)){ @empty }else{ @item.Finish_Date }</td>
+                                        <td><span class="badge badge-@cls">@item.State</span></td>
+                                        <td> <a class="btn btn-light" href="@Url.Action("Work_Detail","Active",new { id= item.WorkId })">Detay</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function returnP()
+    {
+        window.location.href = document.referrer;
+    }
+</script>

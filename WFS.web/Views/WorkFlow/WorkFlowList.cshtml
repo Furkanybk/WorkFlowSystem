@@ -1,0 +1,219 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    ViewBag.Title = "WorkFlowList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">İş Akışları</a></li>
+            <li class="breadcrumb-item active" aria-current="page">İş Akış</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">İş Akışları</h6>
+                    <div class="table-responsive">
+                        <table id="dataTableExample" class="table">
+                            <thead>
+                                <tr>
+                                    <th>İş Akış</th>
+                                    <th>Tanım</th>
+                                    <th>Açıklama</th>
+                                    <th>Kayıt Tarihi</th>
+                                    <th>#</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                @foreach (var item in Model.workFlows)
+                                {
+                                    <tr>
+                                        <td>@item.Name</td>
+                                        <td>@item.Title</td>
+                                        <td>@item.Definition</td>
+                                        <td>@item.Register_Date.ToString("dd.MM.yyyy")</td>
+                                        <td>
+                                            <a class="btn btn-light" href="@Url.Action("EditWorkFlow","WorkFlow",new { id= item.WorkFlowId })">Detay</a>
+                                            <a class="btn btn-light" onclick="showSwal2(@item.WorkFlowId)">Sil</a>
+                                            <input id="pId" name="pId" hidden />
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="wDep" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Listelemek istediğiniz departmanın partnerini seçiniz.</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <select id="firmList" name="firmList" class="form-control col-sm-9" onchange="listSelect()">
+                        <option value="nt">Partner seçiniz.</option>
+                        <option value="allDeps">Tüm iş akışlarını listele</option>
+                        @foreach (var item in Model.partners)
+                        {
+                            <option value="@item.CustomerFirmManagerId">@item.Client.ManagerFirm.Name</option>
+                        }
+                    </select>
+                    <br />
+                    <select id="depList" name="depList" class="form-control col-sm-9">
+                        <option value="nt">Partner seçiniz.</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="depListPost()" class="btn btn-primary">Listele</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script>
+    window.onload = function () {
+        $("#wDep").modal();
+    };
+
+    function listSelect() {
+        var id = $("#firmList").children("option:selected").val();
+        var sel = document.getElementById('depList');
+
+        if (id != "allDeps") {
+            $.ajax({
+                url: "@Url.Action("depSelect", "WorkFlow")",
+                type: "POST",
+                data: { customerFirmId: id },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.result == true && data.list != null) {
+                        $("#depList").empty();
+                        var opt = document.createElement('option');
+                        opt.innerHTML = "Departman seçiniz.";
+                        sel.appendChild(opt);
+                        var opt = document.createElement('option');
+                        opt.innerHTML = "Bu partnerin tüm iş akışlarını listele";
+                        opt.value = "all";
+                        sel.appendChild(opt);
+
+                        $.each(data.list, function (idx, elem) {
+                            var opt = document.createElement('option');
+                            opt.innerHTML = elem.Name;
+                            opt.value = elem.DepartmentId;
+                            sel.appendChild(opt);
+                        });
+                    }
+                    else {
+                        $("#depList").empty();
+                        var opt = document.createElement('option');
+                        opt.innerHTML = "Departman oluşturulmamış.";
+                        sel.appendChild(opt);
+                    }
+                }
+            });
+        }
+        else {
+            $("#wDep").modal("hide");
+        }
+
+    }
+
+    function depListPost() {
+        var partner_id = $("#firmList").children("option:selected").val();
+        var dep_id = $("#depList").children("option:selected").val();
+        var table = $("#tableBody");
+
+        if (dep_id != "all") {
+            $.ajax({
+                url: "@Url.Action("workflowListPost", "WorkFlow")",
+                type: "POST",
+                data: { departmentId: dep_id },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.result == true && data.list != null) {
+                        table.empty();
+                        $.each(data.list, function (idx, elem) {
+                            table.append("<tr><td>" + elem.Name + "</td><td>" + elem.Title + "</td><td>" + elem.Definition + "</td><td>" + moment(elem.Register_Date).format('DD.MM.YYYY') + "</td><td> <a class='btn btn-light' href='/WorkFlow/EditWorkFlow/?id=" + elem.WorkFlowId + "'>Düzenle</a> <a class='btn btn-light' onclick='showSwal2("+ elem.WorkFlowId+")'>Sil</a><input id='pId' name='pId' hidden /></td></tr>");
+                        });
+                        $("#dataTableExample").DataTable();
+                        $("#wDep").modal("hide");
+                    }
+                    else {
+                        $("#wDep").modal("hide");
+                    }
+                }
+            });
+        } else {
+            $.ajax({
+                url: "@Url.Action("workflowListPostAll", "WorkFlow")",
+                type: "POST",
+                data: { customerFirmId: partner_id},
+                dataType: 'json',
+                success: function (data) {
+                    if (data.result == true && data.list != null) {
+                        table.empty();
+                        $.each(data.list, function (idx, elem) {
+                            table.append("<tr><td>" + elem.Name + "</td><td>" + elem.Title + "</td><td>" + elem.Definition + "</td><td>" + moment(elem.Register_Date).format('DD.MM.YYYY') + "</td><td> <a class='btn btn-light' href='/WorkFlow/EditWorkFlow/?id=" + elem.WorkFlowId + "'>Düzenle</a> <a class='btn btn-light' onclick='showSwal2(" + elem.WorkFlowId +")'>Sil</a><input id='pId' name='pId' hidden /></td></tr>");
+                        });
+                        $("#dataTableExample").DataTable();
+                        $("#wDep").modal("hide");
+                    }
+                    else {
+                        $("#wDep").modal("hide");
+                    }
+                }
+            });
+            $("#wDep").modal("hide");
+        }
+    }
+
+
+        $(function () {
+        showSwal2 = function (pid) { 
+            Swal.fire({
+                title:'iş akışını silmek istiyor musunuz ?',
+                text: 'iş akışına ait iş kayıtları silinecektir ve bu işlemi geri alamazsınız!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Evet, sil!'
+            }).then((result) => {
+                if (result.value) {
+                    verifyDelete(pid);
+                }
+            }) 
+        }
+    })
+
+    function verifyDelete(pid) {
+        $.ajax({
+            url: "@Url.Action("DeleteWorkFlow", "WorkFlow")",
+            type: "POST",
+            data: { id: pid },
+            success: function (data) {
+                if (data.result == true) {
+                    showSwal("success", data.message);
+                    setTimeout(function () {
+                        location.reload();
+                    }, 2000);
+                }
+                else {
+                    showSwal("error", data.message);
+                }
+            }
+        });
+    }
+</script>
+

@@ -1,0 +1,70 @@
+﻿@model WFS.web.Models.RootModel
+
+@{
+    ViewBag.Title = "Firms";
+    Layout = "~/Views/Shared/_RootLayout.cshtml";
+
+    string dir; 
+}
+ 
+
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">WFS-Users</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Firms</li>
+        </ol>
+    </nav>
+    <div class="row px-5">
+        @foreach (var item in Model.Managers.OrderByDescending(w => w.Register_Date))
+        {
+            if (item.ManagerFirm.Logo == "firm_default.jpeg")
+            {
+                dir = "firm";
+            }
+            else
+            {
+                dir = item.ManagerFirm.Name;
+            }
+
+            <div class="col-md-4 stretch-card p-3">
+                <div class="card" style="text-align: center;">
+                    <div class="card-body">
+                        <img class="img-fluid" style="border-radius:25px;" src="~/Images/FirmLogo/@dir/256/@item.ManagerFirm.Logo" />
+                        <h2 class="text-center text-uppercase mt-3 mb-4">@item.ManagerFirm.Name</h2>
+                        <h5 class="text-center font-weight-light">@item.ManagerFirm.City / @item.ManagerFirm.State</h5>
+                        <p class="text-muted text-center mb-4 font-weight-light">@item.ManagerFirm.Register_Date.ToString("dd/MM/yyyy")</p>
+                        <div class="d-flex align-items-center mb-2">
+                            <i data-feather="user" class="icon-md text-primary mr-2"></i>
+                            <p><strong>Manager :</strong> @item.Name @item.Surname </p>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i data-feather="mail" class="icon-md text-primary mr-2"></i>
+                            <p><strong>Email :</strong> @item.ManagerFirm.Mail</p>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i data-feather="smartphone" class="icon-md text-primary mr-2"></i>
+                            <p><strong>Contact :</strong> @item.ManagerFirm.Contact</p>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i data-feather="phone" class="icon-md text-primary mr-2"></i>
+                            <p><strong>Fax :</strong> @item.ManagerFirm.Fax</p>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i data-feather="globe" class="icon-md text-primary mr-2"></i>
+                            <strong>Website : </strong><a href="http://@item.ManagerFirm.Url" target="_blank"> @item.ManagerFirm.Url</a>
+                        </div>
+                        <div class="btn-group" role="group">
+                            <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Edit</button>
+                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                <a class="dropdown-item" href="#">Partners</a>
+                                <a class="dropdown-item" href="#">Personels</a>
+                                <a class="dropdown-item" href="#">WFS</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

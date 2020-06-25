@@ -1,0 +1,72 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    ViewBag.Title = "WFS";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+}
+
+<style type="text/css">
+    @@media (min-width: 576px) {
+        .card-columns {
+            column-count: 4;
+            column-gap: 1.25rem;
+            orphans: 1;
+            widows: 1;
+        }
+    }
+</style>
+
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Work Flow</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Partnerler</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card text-black bg-light">
+                <div class="card-body">
+                    <h6 class="card-title">Partnerler</h6>
+                    <div class="row">
+                        <div class="card-columns">
+                            @if (Model.wfsModel != null)
+                            {
+                                foreach (var item in Model.wfsModel)
+                                {
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">@item.Partner.Client.ManagerFirm.Name</h4>
+                                            <div class="row">
+                                                <div class="col-md-5"><p class="card-text">Departman : @item.Departments.Count()</p></div>
+                                                <div class="col-md-4"><p class="card-text">İş Akışı : @item.WorkFlows.Count() </p></div>
+                                                <div class="col-md-3"><p class="card-text">İş :  @item.Works.Count() </p></div>
+                                            </div>
+                                            <p class="card-text">Kayıt Tarihi : @item.Partner.Client.ManagerFirm.Register_Date.ToString("dd.MM.yyyy")</p>
+                                            <hr>
+                                            <div class="row">
+                                                <div class="col-md-6"><a href="/Partner/PartnerProfile/?id=@item.Partner.CustomerFirmManagerId" class="btn btn-primary">Partner Detay</a></div>
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-5"><a href="/Active/WFS_Deps/?id=@item.wfsId" class="btn btn-primary">Departmanlar</a> </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Partner kaydı yapılmamış.<br /> Lütfen önce partner ekleyiniz.</h4>
+                                        <a href="@Url.Action("CreatePartner","Partner")" class="btn btn-primary">Partner Ekle</a>
+                                    </div>
+                                </div>
+                            } 
+                        </div>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

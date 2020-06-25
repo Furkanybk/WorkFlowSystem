@@ -1,0 +1,249 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    ViewBag.Title = "AddWork";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .preview {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 5px;
+        margin-left: 5px;
+        width:200px;
+        height:200px;
+    }
+
+    .preview :hover {
+        box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+    }
+</style> 
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#" onclick="returnP()">WorkFlow</a></li>
+            <li class="breadcrumb-item active" aria-current="page">İş Ekle</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <form id="workAddId" class="parentClass">
+                        <h6 class="card-title">İş Ekle</h6>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <label class="form-check">İş Adı</label>
+                                        <input id="Name" name="Name" type="text" class="form-control" required />
+                                        <label class="form-check">Tanım</label>
+                                        <input id="Title" name="Title" type="text" class="form-control" required />
+                                        <label class="form-check">Açıklama</label>
+                                        <textarea id="Defination" name="Defination" class="form-control" rows="12" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label class="form-check">Partner</label>
+                                            <select id="firmList" name="firmList" class="js-example-basic-single" onchange="depwfs()" required>
+                                                @if (Model.wfsModel != null)
+                                                {
+                                                    <option value="stl">Partner seçiniz.</option>
+                                                    foreach (var item in Model.wfsModel)
+                                                    {
+                                                        <option value="@item.wfsId">@item.Partner.Client.ManagerFirm.Name</option>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <option value="stl">Partner kayıtlı değil. Lütfen önce partner ekleyiniz.</option>
+                                                }
+
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-check">İş akışı</label>
+                                            <select id="wfss" name="wfss" class="js-example-basic-single" required>
+                                                <option>Partner seçiniz.</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="card">
+                                    <div class="card-body">
+                                        <label class="form-check">Beklenen Bitiş Tarihi</label>
+                                        <div class="input-group">
+                                            <input type="date" class="form-control" name="expectedDate" id="expectedDate" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy">
+                                        </div>
+                                        <label class="form-check">Personel Ata</label>
+                                        <select class="js-example-basic-multiple" name="personels[]" id="personals" multiple="multiple" required>
+                                            @foreach (var item in Model.personals)
+                                            {
+                                                <option value="@item.PersonalId">@item.Name @item.Surname</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                        <br />
+                        <div class="row">
+                            <div class="col-md-8 stretch-card grid-margin grid-margin-md-0">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Dosyalar</h6>
+                                        <input class="py-5" type="file" multiple id="postedfiles" name="postedfiles"> 
+                                        <div class="gallery row" id="gallery"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-form-label">İş durumu belirtiniz : </label> 
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label">
+                                            <input type="radio" class="form-check-input" name="options" value="Normal" checked="">
+                                            Normal
+                                            <i class="input-frame"></i>
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label">
+                                            <input type="radio" class="form-check-input" name="options" value="Acil">
+                                            Acil
+                                            <i class="input-frame"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row">
+                        <div class="col-md-10"></div>
+                        <div class="col-md-2"><button id="subBtn" onclick="inputControl()" class="btn btn-primary mr-2 mb-2 mb-md-0" style="float:right">Ekle</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script> 
+    function inputControl() {
+        var np = 1;
+        $('#Name, #Title, #Defination, #expectedDate').each(function () {
+            if ($(this).val() == '') {
+                showSwal("error", 'Lütfen boş kısımları doldurunuz.');
+                np = 0;
+            }
+            else {
+            }
+        });
+         
+        if (np == 1) {
+            addwork();
+        } 
+    }
+
+    function addwork() {
+        var form = $('#workAddId')[0];
+        var formData = new FormData(form);
+        $.ajax({
+            url: "@Url.Action("AddWork", "Active")",
+            type: "POST",
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: function (data) {
+                if (data.result == true) {
+                    showSwal("success", data.message);
+                    setTimeout(function () {
+                        window.location.href = "/Active/WFS";
+                    }, 3000);
+                }
+                else {
+                    showSwal("error", data.message);
+                } 
+            }
+        });
+    }
+     
+    $(function () { 
+        var imagesPreview = function (input, placeToInsertImagePreview) {
+            if (input.files) {
+                var filesAmount = input.files.length;
+                for (i = 0; i < filesAmount; i++) {
+                    console.log(input.files[i].name);
+                    var ext = input.files[i].name.split('.').pop(); 
+                    if (ext != "jpg" && ext != "jpeg" && ext != "jfif" && ext != "png") {
+                        $($.parseHTML('<img src="/Images/file.png" title="' + input.files[i].name +'" class="img-fluid preview">')).appendTo(placeToInsertImagePreview);
+                    }
+                    else {
+                        var reader = new FileReader();
+                        reader.onload = function (event) {
+                            $($.parseHTML('<img class="img-fluid preview">')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
+                        }
+                        reader.readAsDataURL(input.files[i]);
+                    }
+                }
+            }
+        };
+
+        $('#postedfiles').on('change', function () {
+            document.getElementById("gallery").innerHTML = "";
+            imagesPreview(this, 'div.gallery');
+        });
+    });
+
+    function returnP() {
+        window.location.href = document.referrer;
+    }
+
+    function depwfs() {
+        var id = $("#firmList").children("option:selected").val();
+        var sel = document.getElementById("wfss");
+        if (id != "stl") {
+            $.ajax({
+                url: "@Url.Action("depSelect", "WorkFlow")",
+                type: "POST",
+                data: { customerFirmId: id },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.result == true && data.list != null) {
+                        $("#wfss").empty();
+                        $.each(data.list, function (key, elem) {
+                            var group = document.createElement('optgroup');
+                            group.label = elem.Name;
+                            $.each(elem.WorkFlows, function (key, elem2) {
+                                var opt = document.createElement('option');
+                                opt.innerHTML = elem2.Name;
+                                opt.value = elem2.WorkFlowId;
+                                console.log(elem2.WorkFlowId);
+                                group.appendChild(opt);
+                            });
+                            sel.appendChild(group);
+                        });
+                    }
+                    else {
+                        $("#wfss").empty();
+                        var opt = document.createElement('option');
+                        opt.innerHTML = "Departman veya iş akışı oluşturulmamış.";
+                        sel.appendChild(opt);
+                    }
+                }
+            });
+        }
+        else {
+            $("#wfss").empty();
+            var opt = document.createElement('option');
+            opt.innerHTML = "Partner seçiniz.";
+            opt.value = "stl";
+            sel.appendChild(opt);
+        }
+
+    }
+</script>

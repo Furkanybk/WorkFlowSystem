@@ -1,0 +1,153 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    ViewBag.Title = "EditPersonal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string dir;
+
+    if (Model.currentUser.Image == "user_default.png")
+    {
+        dir = "user";
+    }
+    else
+    {
+        dir = Model.personal.personalUser.UserName.Split('@')[0];
+    }
+
+}
+ 
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Personeller</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Personel Düzenle</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Personel Düzenle</h6>
+                    <form id="personalId" method="post">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="control-label">Ad</label>
+                                    <input id="Name" name="Name" type="text" class="form-control" value="@Model.personal.Name" required disabled>
+                                </div>
+                            </div><!-- Col -->
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="control-label">Soyad</label>
+                                    <input id="Surname" name="Surname" type="text" class="form-control" value="@Model.personal.Surname" required disabled>
+                                </div>
+                            </div><!-- Col -->
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="control-label">Doğum Tarihi</label>
+                                    <input id="Birthday" name="Birthday" type="text" class="form-control" data-inputmask="'alias': 'datetime'" data-inputmask-inputformat="dd/mm/yyyy" value="@Model.personal.BirthDay" required disabled>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Mevki</label>
+                                    <input id="PRole" name="PRole" type="text" class="form-control" value="@Model.personal.PRole" required disabled>
+                                </div>
+                            </div><!-- Col --> 
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Tel</label>
+                                    <input id="Contact" name="Contact" type="text" class="form-control" data-inputmask-alias="(999)-999-9999" value="@Model.personal.Contact" required disabled>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Email</label>
+                                    <input id="Mail" name="Mail" type="text" class="form-control" data-inputmask="'alias': 'email'" value="@Model.personal.Mail" required disabled>
+                                </div>
+                            </div><!-- Col -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Şifre</label>
+                                    <input id="Password" name="Password" type="text" class="form-control" value="@Model.personal.Password" required disabled>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">İl</label>
+                                    <input id="City" name="City" type="text" class="form-control" value="@Model.personal.City" required disabled>
+                                </div>
+                            </div><!-- Col -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">İlçe</label>
+                                    <input id="State" name="State" type="text" class="form-control" value="@Model.personal.State" required disabled>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Adres</label>
+                                    <textarea id="Address" name="Address" class="form-control" maxlength="100" rows="3" required disabled>@Model.personal.Address</textarea>
+                                </div>
+                            </div><!-- Col -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Resim</label>
+                                    <input id="image" name="image" type="file" class="form-control" placeholder="Resim" disabled>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <input id="personalId" name="personalId" type="hidden" value="@Model.personal.PersonalId" />
+                        <br />
+                    </form>
+                    <div id="buttons"> 
+                        <img class="profile-pic img-fluid" src="~/Images/UserPicture/@dir/256/@Model.personal.personalUser.Image">
+                        <button id="editBtn" type="button" onclick="edit()" class="btn btn-primary mr-2 mb-2 mb-md-0" style="float:right">Düzenle</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function edit() {
+        $("#personalId :input").prop("disabled", false); 
+        document.getElementById("buttons").innerHTML = "<button id='subBtn' onclick='personalPost()' class='btn btn-primary mr-2 mb-2 mb-md-0' style='float:right'>Kaydet</button>" + "<button id='cancelBtn' type='button' onclick='cancel()' class='btn btn-primary mr-2 mb-2 mb-md-0' style='float:right'>İptal</button>";
+    }
+
+    function cancel(){
+        window.location.href = "@Url.Action("EditPersonal", "Personal")";
+    }
+
+    function personalPost() {
+            var form = $('#personalId')[0];
+            var formData = new FormData(form);
+            $.ajax({
+                url: "@Url.Action("EditPersonal", "Personal")",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function (data) {
+                    if (data.result == true) {
+                        showSwal("success", data.message);
+                        setTimeout(function () {
+                            location.reload();
+                        }, 3000);
+                    }
+                    else {
+                        showSwal("error", data.message);
+                    } 
+                }
+            });
+    }
+</script>

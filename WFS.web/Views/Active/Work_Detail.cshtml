@@ -1,0 +1,350 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    ViewBag.Title = "Work_Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var user = WFS.web.Session.SessionUser.User;
+
+    bool ownWork = false;
+
+    string empty = "-";
+
+    var i = 0;
+
+    foreach (var item in Model.Wpersonals)
+    {
+        if (item.PersonalId == user.Personal_Id)
+        {
+            ownWork = true;
+        }
+    }
+}
+
+<style>
+
+    .preview {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 5px;
+        margin-left: 5px;
+    }
+
+        .preview :hover {
+            box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+        }
+
+    .empty {
+        margin: 5px;
+    }
+</style>
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#" onclick="returnP()">@Model.workM.Name</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Detay</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">@Model.workM.Name</h6>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label class="form-check">Tanım</label>
+                                    <input type="text" class="form-control" value="@Model.workM.Title" disabled />
+                                    <label class="form-check">Açıklama</label>
+                                    <textarea class="form-control" rows="12" disabled>@Model.workM.Definition</textarea>
+                                    <hr />
+                                    <label class="form-check">Dosyalar</label>
+                                    <div class="row p-3">
+                                        @if (Model.workM.UploadFiles.Count == 0)
+                                        {
+                                            <p>Dosya eklenmemiş.</p>
+                                        }
+                                        else
+                                        {
+                                            foreach (var item in Model.workM.UploadFiles)
+                                            {
+                                                string path = Model.workM.Name + "/" + item.fileName + "/1024/" + item.fileUrl;
+                                                <img class="img-fluid preview p-3" src="~/Images/WorkPics/@Model.workM.Name/@item.fileName/256/@item.fileUrl" style="cursor:pointer;" onclick="openFile('image','@path')" />
+                                            }
+                                        } 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <label class="form-check">Kayıt Tarihi</label>
+                                    <input id="registerDate" type="datetime" class="form-control" value="@Model.workM.Register_Date" disabled />
+                                    <label class="form-check">Başlangıç Tarihi</label>
+                                    <input id="startDate" type="datetime" class="form-control" value="@if(Model.workM.Start_Date == default(DateTime)){ @empty }else{ @Model.workM.Start_Date }" disabled />
+                                    <label class="form-check">Beklenen Bitiş Tarihi</label>
+                                    <input id="expectedDate" type="datetime" class="form-control" value="@Model.workM.Expected_Date" disabled />
+                                    <label class="form-check">Bitiş Tarihi</label>
+                                    <input id="finishDate" type="datetime" class="form-control" value="@if(Model.workM.Finish_Date == default(DateTime)){ @empty }else{ @Model.workM.Finish_Date }" disabled />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card ">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-9"> <h6 class="card-title">İş Listesi</h6></div>
+                                        @if (user.User.Role != "ClientManager" && ownWork)
+                                        {
+                                            <div class="col-md-3"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#NoteModal">İş Parçası Ekle</button></div>
+                                        }
+                                    </div><br />
+                                    <div class="list-group">
+                                        @if (Model.workM.WorkLists.Count != 0)
+                                        {
+                                            foreach (var item in Model.Wpersonals)
+                                            {
+                                                i++;
+                                                <a id="@i" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="col-@i" class="list-group-item list-group-item-action bg-light text-black" onclick="changeIcon(this.id)">
+                                                    <div class="row" style="text-align:center;">
+                                                        <span class="col-md-1"><i data-feather="user"></i></span>
+                                                        <h6 class="card-text col-md-3">@item.Name</h6>
+                                                        <h6 class="card-text col-md-3">@item.Surname</h6>
+                                                        <h6 class="card-text col-md-3">@item.PRole</h6>
+                                                        <div class="col-md-1"></div>
+                                                        <span id="swp_@i" class="col-md-1" style="cursor:pointer;"><i data-feather="chevrons-down"></i></span>
+                                                    </div>
+                                                </a>
+                                                <div class="collapse" id="col-@i">
+                                                    <div class="card card-body">
+                                                        <div class="card-columns">
+                                                            @foreach (var item2 in Model.workM.WorkLists.OrderByDescending(x => x.Register_Date))
+                                                            {
+                                                                if (item2.WLpersonal.PersonalId != item.PersonalId) { continue; }
+                                                                <div class="card text-center text-black bg-light">
+                                                                    <div class="card-body">
+                                                                        <h5 class="card-title">@item2.Name</h5>
+                                                                        <p class="card-text">@item2.Title</p>
+                                                                        <p class="card-text"><small class="text-muted">@item2.Register_Date</small></p>
+                                                                        @if (item2.State.Contains("Çalışılıyor") && Model.currentUser.Id == item.PersonalId)
+                                                                        {
+                                                                            <a class="btn btn-secondary empty" onclick="completeworkPiece(@item2.WorkListId,@Model.workM.WorkId)" title="İş parçacığını tamamla."><i data-feather="check"></i></a>
+                                                                            <a class="btn btn-secondary empty" onclick="deleteworkPiece(@item2.WorkListId)" title="İş parçacığını sil."><i data-feather="trash"></i></a>
+                                                                        }
+                                                                        else if (item2.State.Contains("Tamamlandı"))
+                                                                        {
+                                                                            <hr />
+                                                                            <p class="card-text">Tamamlandı.</p>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <h6 class="card-text">İş parçası eklenmemiş.</h6>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">Çalışan Personel</h6>
+                                    <div class="profile-page">
+                                        <div class="row profile-body">
+                                            <div class="right-wrapper">
+                                                <div class="latest-photos">
+                                                    <div class="row px-2">
+                                                        @foreach (var item in Model.Wpersonals)
+                                                        {
+                                                            <div class="col-md-4 px-2">
+                                                                <figure>
+                                                                    <img id="@item.personalUserId" src="~/Images/UserPicture/@item.personalUser.UserName.Split('@')[0]/256/@item.personalUser.Image" style="cursor:pointer;" class="img-fluid py-2" data-toggle="tooltip" data-placement="top" title="@item.Name @item.Surname - @item.PRole">
+                                                                </figure>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">Bitirilen</h6>
+                                    <div class="progress">
+                                        <div class="progress-bar text-black" role="progressbar" style="text-align:center; width: @Convert.ToInt32(Model.workM.ProgressBar)%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">@Convert.ToInt32(Model.workM.ProgressBar)%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="NoteModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="modalTitle" class="modal-title">İş Parçası Ekleme</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Kapat">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="workPieceId" method="post">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Başlık</label>
+                                    <input id="Name" name="Name" type="text" class="form-control" required>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Açıklama</label>
+                                    <textarea id="Title" name="Title" type="text" class="form-control" maxlength="500" rows="8" required></textarea>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <input id="wId" name="wId" type="hidden" value="@Model.workM.WorkId" />
+                        <input id="pId" name="pId" type="hidden" value="@Model.currentUser.Id" />
+                    </form>
+                </div>
+                <div id="Mfooter" class="modal-footer">
+                    <button id="addN" type="button" onclick="addworkPiece()" class="btn btn-primary">Ekle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="fileModal" class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="preview" class="modal-body" style="text-align:center;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
+<script>
+
+    function returnP()
+    {
+        window.location.href = document.referrer;
+    }
+
+    function openFile(file,url) {
+        if (file == "image") {
+            document.getElementById("preview").innerHTML = "<img class='img-fluid' src='/Images/WorkPics/"+ url + "' />";
+            $("#fileModal").modal();
+        }
+        else {
+
+        }
+    }
+
+    function addworkPiece() {
+        $.ajax({
+            url: "@Url.Action("CreateWorkPiece", "Active")",
+            type: "POST",
+            data: $("#workPieceId").serialize(),
+            success: function (data) {
+                if (data.result == true) {
+                    $("#NoteModal").modal("hide");
+                    window.location.reload(false);
+                }
+                else {
+                    $("#NoteModal").modal("hide");
+                }
+            }
+        });
+    }
+
+    function deleteworkPiece(id) {
+        $.ajax({
+            url: "@Url.Action("DeleteWorkPiece", "Active")",
+            type: "POST",
+            data: {wId : id},
+            success: function (data) {
+                if (data.result == true) {
+                    window.location.reload(false);
+                }
+                else {
+                }
+
+            }
+        });
+    }
+
+    function completeworkPiece(id, wid) {
+        $.ajax({
+            url: "@Url.Action("CompleteWorkPiece", "Active")",
+            type: "POST",
+            data: { Id : id, wId : wid  },
+            success: function (data) {
+                if (data.result == true) {
+                    window.location.reload(false);
+                }
+                else {
+                }
+            }
+        });
+    }
+
+    function changeIcon(id) {
+        var icon = $("#swp_" + id);
+        var downArrow = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevrons-down'><polyline points='7 13 12 18 17 13'></polyline><polyline points='7 6 12 11 17 6'></polyline></svg>";
+        var upArrow = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-up'><polyline points='18 15 12 9 6 15'></polyline></svg>";
+
+        if (icon.html().includes("down")) {
+            icon.html(upArrow);
+            $("#col-" + id).addClass("show");
+        } else {
+            $("#col-" + id).removeClass("show");
+            icon.html(downArrow);
+        }
+    }
+
+     $(document).ready(function () {
+         let personels = @Html.Raw(Json.Encode(Model.Wpersonals));
+
+         personels.forEach(function (entry) {
+             let id = entry.personalUserId;
+             let url = document.getElementById(id).src;
+             $.get(url)
+                 .done(function () { 
+                 }).fail(function () {
+                     document.getElementById(id).src = "/Images/UserPicture/user/256/user_default.png"; 
+                 });
+         }); 
+     }); 
+
+</script> 

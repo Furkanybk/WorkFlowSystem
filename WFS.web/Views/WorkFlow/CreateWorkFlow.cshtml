@@ -1,0 +1,122 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    ViewBag.Title = "CreateWorkFlow";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">İş Akışları</a></li>
+            <li class="breadcrumb-item active" aria-current="page">İş Akışı Ekle</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">İş Akışı Ekle</h6>
+                    <form id="workflowId" method="post">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <select id="firmList" name="firmList" class="form-control col-sm-9" onchange="listSelect()">
+                                        <option value="nt">Partner seçiniz.</option>
+                                        @foreach (var item in Model.partners)
+                                        {
+                                            <option value="@item.CustomerFirmManagerId">@item.Client.ManagerFirm.Name</option>
+                                        }
+                                    </select>
+                                    <br />
+                                    <select id="depList" name="depList" class="form-control col-sm-9">
+                                        <option value="nt">Partner seçiniz.</option>
+                                    </select>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">İş Akış Ad</label>
+                                    <input id="Name" name="Name" type="text" class="form-control" required>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Tanım</label>
+                                    <input id="Title" name="Title" type="text" class="form-control" required>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Açıklama</label>
+                                    <textarea id="Defination" name="Defination" class="form-control" maxlength="100" rows="8" required></textarea>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <br />
+                    </form>
+                    <button id="subBtn" type="submit" onclick="added()" class="btn btn-primary mr-2 mb-2 mb-md-0" style="float:right">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js")
+<script>
+    function listSelect() {
+        var id = $("#firmList").children("option:selected").val();
+        var sel = document.getElementById('depList');
+        $.ajax({
+            url: "@Url.Action("depSelect", "WorkFlow")",
+            type: "POST",
+            data: { customerFirmId: id },
+            dataType: 'json',
+            success: function (data) {
+                if (data.result == true && data.list != null) {
+                    $("#depList").empty();
+                    var opt = document.createElement('option');
+                    opt.innerHTML = "Departman seçiniz.";
+                    sel.appendChild(opt);
+
+                    $.each(data.list, function (idx, elem) {
+                        var opt = document.createElement('option');
+                        opt.innerHTML = elem.Name;
+                        opt.value = elem.DepartmentId;
+                        sel.appendChild(opt);
+                    });
+                }
+                else {
+                    $("#depList").empty();
+                    var opt = document.createElement('option');
+                    opt.innerHTML = "Departman oluşturulmamış.";
+                    sel.appendChild(opt);
+                }
+            }
+        });
+    }
+
+    function added() {
+        $.ajax({
+            url: "@Url.Action("CreateWorkFlow", "WorkFlow")",
+            type: "POST",
+            data: $("#workflowId").serialize(),
+            success: function (data) {
+                if (data.result == true) {
+                    showSwal("success", data.message);
+                    setTimeout(function () {
+                        window.location.href = "@Url.Action("WorkFlowList","WorkFlow")";
+                    }, 2000);
+                }
+                else {
+                    showSwal("error", data.message);
+                }
+            }
+        });
+    }
+</script>

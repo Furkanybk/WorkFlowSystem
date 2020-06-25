@@ -1,0 +1,83 @@
+﻿@model WFS.web.Models.MainModel
+@{
+    ViewBag.Title = "EditWorkFlow";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-content">
+    <nav class="page-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">İşler</a></li>
+            <li class="breadcrumb-item active" aria-current="page">İş Düzenle</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">İş Düzenle</h6>
+                    <form id="workflowId" method="post">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">İş Akış Ad</label>
+                                    <input id="Name" name="Name" type="text" class="form-control" value="@Model.workflowM.Name" required disabled>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Tanım</label>
+                                    <input id="Title" name="Title" type="text" class="form-control" value="@Model.workflowM.Title" required disabled>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Açıklama</label>
+                                    <textarea id="Defination" name="Defination" class="form-control" maxlength="100" rows="8" required disabled>@Model.workflowM.Definition</textarea>
+                                </div>
+                            </div><!-- Col -->
+                        </div><!-- Row -->
+                        <input type="hidden" name="wfId" id="wfId" value="@Model.workflowM.WorkFlowId" />
+                        <br />
+                    </form>
+                    <div id="buttons">
+                        <a id="editBtn" onclick="edit()" class="btn btn-primary mr-2 mb-2 mb-md-0" style="float:right">Düzenle</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script>
+
+
+    function edit() {
+        $("#workflowId :input").prop("disabled", false);
+        document.getElementById("buttons").innerHTML = "<a id='subBtn' onclick='save()' class='btn btn-primary mr-2 mb-2 mb-md-0' style='float:right'>Kaydet</a>" + "<a id='cancelBtn' type='button' onclick='cancel()' class='btn btn-primary mr-2 mb-2 mb-md-0' style='float:right'>İptal</a>";
+    }
+    function save() {
+        $.ajax({
+            url: "@Url.Action("EditWorkFlow", "WorkFlow")",
+            type: "POST",
+            data: $("#workflowId").serialize(),
+            success: function (data) {
+                if (data.result == true) {
+                    showSwal("success", data.message);
+                    $("#workflowId :input").prop("disabled", true);
+                    document.getElementById("buttons").innerHTML = "<a id='editBtn' onclick='edit()' class='btn btn-primary mr-2 mb-2 mb-md-0' style='float:right'>Düzenle</a>";
+                }
+                else {
+                    showSwal("error", data.message);
+                }
+            }
+        });
+    }
+    function cancel() {
+        window.location.href = "@Url.Action("EditWorkFlow", "WorkFlow")";
+    }
+</script>
