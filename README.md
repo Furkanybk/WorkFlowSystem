@@ -40,15 +40,15 @@
 ![Image](https://github.com/Furkanybk/WorkFlowSystem/blob/master/screencapture/22-works.PNG)
 ### 20- Mesajlar
 ![Image](https://github.com/Furkanybk/WorkFlowSystem/blob/master/screencapture/23-message.PNG) 
-### 20- Mesaj
+### 21- Mesaj
 ![Image](https://github.com/Furkanybk/WorkFlowSystem/blob/master/screencapture/24-message2.PNG) 
-### 20- Mesaj oku
+### 22- Mesaj oku
 ![Image](https://github.com/Furkanybk/WorkFlowSystem/blob/master/screencapture/25-message3.PNG) 
-### 20- Panel
+### 23- Panel
 ![Image](https://github.com/Furkanybk/WorkFlowSystem/blob/master/screencapture/26-panel3.PNG) 
-### 20- Notlarım
+### 24- Notlarım
 ![Image](https://github.com/Furkanybk/WorkFlowSystem/blob/master/screencapture/27-note.PNG) 
-### 20- Destek
+### 25- Destek
 ![Image](https://github.com/Furkanybk/WorkFlowSystem/blob/master/screencapture/28--support.PNG) 
-### 20- PostgreSql
+### 26- PostgreSql
 ![Image](https://github.com/Furkanybk/WorkFlowSystem/blob/master/screencapture/29-postgre.PNG) 
